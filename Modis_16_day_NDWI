@@ -1,0 +1,23 @@
+var dataset = ee.ImageCollection("MODIS/MCD43A4_006_NDWI")
+                  .filter(ee.Filter.date('2018-01-01', '2018-12-31'));
+var colorized = dataset.select('NDWI');
+var colorizedVis = {
+  min: 0.0,
+  max: 1.0,
+  palette: ['0000ff', '00ffff', 'ffff00', 'ff0000', 'ffffff'],
+};
+Map.setCenter(29.981016,-2.140189, 9);
+Map.addLayer(colorized.mean(), colorizedVis, 'Colorized');
+print(colorized.toBands())
+print(dataset)
+//Export a cloud-optimized GeoTIFF.
+// Export.image.toDrive({
+//   image: dataset.toBands(),
+//   description: 'MCD43A4_006_NDWI',
+//   scale: 250,
+//   region: rwanda_geom,
+//   fileFormat: 'GeoTIFF',
+//   formatOptions: {
+//     cloudOptimized: true
+//   }
+// });

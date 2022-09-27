@@ -1,0 +1,26 @@
+var rwanda_geom = ee.Geometry.Rectangle([28.8333333329999988,-2.8333333329999997, 30.9166666670000012,-1.0416666670000001]);
+Map.centerObject(rwanda_geom);
+Map.addLayer(rwanda_geom, {color: 'FF0000'}, 'rwanda_geom');
+
+var dataset = ee.ImageCollection('LANDSAT/LC08/C01/T1_32DAY_NDWI')
+                  .filterDate('2018-01-01', '2018-12-31');
+var ndwi = dataset.select('NDWI');
+
+// var batch = require('users/fitoprincipe/geetools:batch');
+
+// batch.Download.ImageCollection.toDrive(dataset, 'NDWI', 
+//                 {scale: 30, 
+//                 region: rwanda_geom.getInfo(), 
+//                 type: 'float'})
+              
+//Export a cloud-optimized GeoTIFF.
+Export.image.toDrive({
+  image: dataset.toBands(),
+  description: 'T1_32DAY_NDWI',
+  scale: 30,
+  region: rwanda_geom,
+  fileFormat: 'GeoTIFF',
+  formatOptions: {
+    cloudOptimized: true
+  }
+});
